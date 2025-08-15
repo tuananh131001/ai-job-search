@@ -1,4 +1,6 @@
-# Job Scraper Backend - PR #1: Backend Foundation
+# Job Scraper Backend
+
+## PR #1: Backend Foundation
 
 ## Overview
 Basic FastAPI backend setup with SQLite database connection and health check endpoints.
