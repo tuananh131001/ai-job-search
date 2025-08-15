@@ -1,30 +1,36 @@
 # Job Scraper Backend
 
-## PR #1: Backend Foundation
-
 ## Overview
-Basic FastAPI backend setup with SQLite database connection and health check endpoints.
+FastAPI backend with MySQL database for job scraping application.
 
 ## Setup Instructions
 
-1. **Create Python virtual environment:**
+1. **Start MySQL database:**
+```bash
+docker-compose up -d mysql
+# Wait for MySQL to be ready (check logs)
+docker-compose logs mysql
+```
+
+2. **Create Python virtual environment:**
 ```bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-2. **Install dependencies:**
+3. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Configure environment:**
+4. **Configure environment:**
 ```bash
 cp .env.example .env
+# Update .env with your MySQL credentials if needed
 ```
 
-4. **Run the server:**
+5. **Run the server:**
 ```bash
 python run.py
 # Or directly with uvicorn:
@@ -79,11 +85,11 @@ open http://localhost:8000/docs
 
 ## Features Implemented
 - ✅ FastAPI application setup
-- ✅ SQLite database connection with SQLAlchemy
+- ✅ MySQL database connection with SQLAlchemy
+- ✅ Docker Compose for MySQL setup
+- ✅ Connection pooling for better performance
 - ✅ Configuration management with Pydantic Settings
 - ✅ CORS middleware for frontend integration
 - ✅ Health check endpoints
 - ✅ Auto-generated API documentation
 - ✅ Environment-based configuration
-
-## Total Lines of Code: ~150
