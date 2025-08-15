@@ -6,10 +6,10 @@ A simple job scraping application targeting Vietnamese Fresher Marketing positio
 ## Tech Stack
 - **Backend**: Python 3.11+ with FastAPI
 - **Frontend**: React 18 with TypeScript
-- **Database**: SQLite (simple, no setup required)
+- **Database**: MySQL 8.0 (more scalable than SQLite)
 - **Scraping**: BeautifulSoup4 + Requests (keeping it simple)
 - **Task Queue**: Simple cron-like scheduler with APScheduler
-- **Deployment**: Docker Compose for local development
+- **Deployment**: Docker Compose for MySQL and local development
 
 ## Architecture
 ```
@@ -36,7 +36,7 @@ job-scraper/
 ### PR #1: Backend Foundation (~150 lines)
 - Set up FastAPI project structure
 - Create basic configuration
-- Set up SQLite database connection
+- Set up MySQL database connection with Docker Compose
 - Create health check endpoint
 - Add requirements.txt with minimal dependencies
 
