@@ -52,7 +52,7 @@ Primary table storing all job listings with focus on Marketing Junior positions.
 | company_id | INT | FK | Reference to companies table |
 | description | TEXT | NOT NULL | Full job description |
 | location | VARCHAR(255) | | Job location |
-| url | VARCHAR(1000) | UNIQUE, NOT NULL | Original job URL |
+| url | VARCHAR(767) | UNIQUE, NOT NULL | Original job URL |
 | source | ENUM('indeed', 'linkedin') | NOT NULL | Data source |
 | job_type | ENUM('full-time', 'part-time', 'contract', 'internship') | | Employment type |
 | experience_level | ENUM('entry', 'junior', 'mid', 'senior') | | Required experience |

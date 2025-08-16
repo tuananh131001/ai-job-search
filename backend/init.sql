@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     company_id INT,
     description TEXT NOT NULL,
     location VARCHAR(255),
-    url VARCHAR(1000) UNIQUE NOT NULL,
+    url VARCHAR(767) UNIQUE NOT NULL,
     source ENUM('indeed', 'linkedin') NOT NULL,
     job_type ENUM('full-time', 'part-time', 'contract', 'internship'),
     experience_level ENUM('entry', 'junior', 'mid', 'senior'),
