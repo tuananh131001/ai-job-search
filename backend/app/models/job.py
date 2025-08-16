@@ -33,7 +33,7 @@ class Job(Base):
     company_id = Column(Integer, ForeignKey("companies.id"))
     description = Column(Text, nullable=False)
     location = Column(String(255), index=True)
-    url = Column(String(767), unique=True, nullable=False)  # 767 chars * 4 bytes = 3068 bytes < 3072 limit
+    url = Column(String(767), unique=True, nullable=False)  # 767*4 = 3068 < 3072
     source = Column(Enum(JobSource), nullable=False, index=True)
     job_type = Column(Enum(JobType), nullable=True)
     experience_level = Column(Enum(ExperienceLevel), nullable=True, index=True)

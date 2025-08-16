@@ -4,8 +4,10 @@ from app.core.config import settings
 from app.api import health, database
 from app.database.session import engine, Base
 
-# Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
+# Create tables if they don't exist (only if not in test mode)
+import os
+if not os.getenv("TESTING"):
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.app_name,

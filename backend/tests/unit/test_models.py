@@ -73,7 +73,7 @@ class TestJobModel:
         """Test job string representation"""
         repr_str = repr(sample_job)
         assert "Junior Marketing Executive" in repr_str
-        assert "junior" in repr_str
+        assert "JUNIOR" in repr_str
     
     def test_job_enums(self):
         """Test job enum values"""

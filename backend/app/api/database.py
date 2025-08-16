@@ -14,7 +14,7 @@ async def get_database_stats(db: Session = Depends(get_db)):
     try:
         # Count total jobs
         total_jobs = db.query(func.count(Job.id)).scalar()
-        active_jobs = db.query(func.count(Job.id)).filter(Job.is_active == True).scalar()
+        active_jobs = db.query(func.count(Job.id)).filter(Job.is_active == True).scalar()  # noqa: E712
         
         # Count by experience level
         junior_jobs = db.query(func.count(Job.id)).filter(
@@ -25,8 +25,10 @@ async def get_database_stats(db: Session = Depends(get_db)):
         total_companies = db.query(func.count(Company.id)).scalar()
         
         # Count by source
-        indeed_jobs = db.query(func.count(Job.id)).filter(Job.source == "indeed").scalar()
-        linkedin_jobs = db.query(func.count(Job.id)).filter(Job.source == "linkedin").scalar()
+        indeed_jobs = db.query(func.count(Job.id)).filter(
+            Job.source == "indeed").scalar()
+        linkedin_jobs = db.query(func.count(Job.id)).filter(
+            Job.source == "linkedin").scalar()
         
         return {
             "jobs": {

@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     
     # Database settings
     mysql_host: str = "localhost"
-    mysql_port: int = 3306
+    mysql_port: int = 3307
     mysql_user: str = "jobuser"
     mysql_password: str = "jobpass"
     mysql_database: str = "job_scraper"
@@ -17,7 +17,8 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """Construct database URL from components"""
-        return f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}"
+        return (f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}"
+                f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}")
     
     # API settings
     host: str = "0.0.0.0"
