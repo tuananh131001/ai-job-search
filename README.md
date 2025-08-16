@@ -14,8 +14,9 @@ An intelligent job scraping application that helps Vietnamese Fresh Graduate Mar
 
 - **Backend**: Python 3.11+ with FastAPI
 - **Frontend**: React 18 with TypeScript
-- **Database**: SQLite
+- **Database**: MySQL 8.0
 - **Scraping**: BeautifulSoup4 + Requests
+- **Containerization**: Docker & Docker Compose
 
 ## Project Structure
 
@@ -29,9 +30,18 @@ ai-job-search/
 
 ## Getting Started
 
+### Prerequisites
+- Docker & Docker Compose
+- Python 3.11+
+- Node.js 18+ (for frontend, coming soon)
+
 ### Backend Setup
 
 ```bash
+# Start MySQL database
+docker-compose up -d mysql
+
+# Set up Python environment
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate

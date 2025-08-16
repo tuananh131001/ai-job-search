@@ -1,15 +1,15 @@
-# Job Scraper Application - Implementation Plan
+# Job Scraper Application - Implementation Plan (Simplified)
 
 ## Overview
-A simple job scraping application targeting Vietnamese Fresher Marketing positions from Indeed and LinkedIn.
+A focused job scraping application specifically targeting Marketing Junior positions in Vietnam from Indeed and LinkedIn.
 
 ## Tech Stack
 - **Backend**: Python 3.11+ with FastAPI
 - **Frontend**: React 18 with TypeScript
-- **Database**: SQLite (simple, no setup required)
-- **Scraping**: BeautifulSoup4 + Requests (keeping it simple)
-- **Task Queue**: Simple cron-like scheduler with APScheduler
-- **Deployment**: Docker Compose for local development
+- **Database**: MySQL 8.0 (simplified schema: jobs + companies only)
+- **Scraping**: BeautifulSoup4 + Requests
+- **Task Queue**: APScheduler for automated scraping
+- **Deployment**: Docker Compose for MySQL and local development
 
 ## Architecture
 ```
@@ -18,9 +18,17 @@ job-scraper/
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── models/
+│   │   │   ├── job.py
+│   │   │   └── company.py
 │   │   ├── scrapers/
+│   │   │   ├── indeed.py
+│   │   │   └── linkedin.py
 │   │   ├── api/
+│   │   │   ├── jobs.py
+│   │   │   ├── companies.py
+│   │   │   └── stats.py
 │   │   └── database/
+│   │       └── connection.py
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
@@ -28,147 +36,184 @@ job-scraper/
 │   │   ├── services/
 │   │   └── App.tsx
 │   └── package.json
+├── docs/
+│   ├── database/
+│   │   └── SCHEMA.md
+│   └── api/
+│       └── API_CONTRACT.md
 └── docker-compose.yml
 ```
 
-## Implementation Steps (Small PRs)
+## Implementation Steps (Focused PRs)
 
-### PR #1: Backend Foundation (~150 lines)
+### PR #1: Backend Foundation & Database Setup (~200 lines)
 - Set up FastAPI project structure
-- Create basic configuration
-- Set up SQLite database connection
-- Create health check endpoint
-- Add requirements.txt with minimal dependencies
+- Create MySQL database with simplified schema (jobs + companies only)
+- Implement database models using SQLAlchemy
+- Create database connection and session management
+- Add health check endpoint
+- Docker Compose setup for MySQL
 
-### PR #2: Database Models (~100 lines)
-- Define Job model (SQLAlchemy)
-- Create database tables
-- Add migration script
-- Implement basic CRUD operations
+### PR #2: Marketing-Focused Scrapers (~300 lines)
+- Create Indeed scraper for Marketing Junior jobs
+- Create LinkedIn scraper for Marketing Junior jobs
+- Implement filters for:
+  - Experience level (entry/junior)
+  - Marketing-related keywords
+  - Vietnam locations
+- Parse job details: title, company, salary, location
+- Add company extraction and deduplication
 
-### PR #3: Indeed Scraper Module (~200 lines)
-- Create Indeed scraper class
-- Parse job listings (title, company, location, description)
-- Handle pagination
-- Add error handling and retry logic
-- Focus on Vietnam market with Marketing keywords
+### PR #3: Core API Endpoints (~200 lines)
+- GET /api/jobs - List Marketing Junior jobs with filters
+- GET /api/jobs/{id} - Get specific job details
+- GET /api/companies - List companies hiring for Marketing
+- GET /api/stats/marketing-junior - Marketing Junior statistics
+- GET /api/filters/marketing-junior - Available filter options
+- Implement pagination and sorting
 
-### PR #4: LinkedIn Scraper Module (~200 lines)
-- Create LinkedIn scraper class
-- Handle LinkedIn's structure
-- Parse job details
-- Add rate limiting to be respectful
-- Note: May need to use cookies/headers
-
-### PR #5: API Endpoints (~150 lines)
-- GET /api/jobs - List all jobs with pagination
-- GET /api/jobs/{id} - Get specific job
-- POST /api/scrape - Trigger manual scraping
-- GET /api/stats - Get scraping statistics
-- Add proper error handling
-
-### PR #6: React Frontend Setup (~100 lines)
+### PR #4: React Frontend Setup (~150 lines)
 - Initialize React app with TypeScript
-- Set up routing
-- Create layout components
-- Configure API client (axios)
-- Add basic styling (Tailwind CSS)
+- Configure API client for backend communication
+- Create base layout for job listing platform
+- Set up routing for jobs and companies
+- Add Tailwind CSS for styling
 
-### PR #7: Job Listing Components (~200 lines)
-- Create JobCard component
-- Create JobList component with pagination
-- Add loading states
-- Implement error boundaries
-- Mobile responsive design
+### PR #5: Job Listing & Filtering UI (~250 lines)
+- Create JobCard component optimized for Marketing positions
+- Build filter sidebar for:
+  - Experience level (entry/junior)
+  - Location
+  - Salary range
+  - Job type
+- Implement search for Marketing keywords
+- Add responsive design for mobile
 
-### PR #8: Job Details & Filters (~200 lines)
-- Job detail view component
-- Filter sidebar (company, location, date)
-- Search bar component
-- Sort options (date, relevance)
-- Save/bookmark functionality
+### PR #6: Company View & Statistics (~200 lines)
+- Company listing page showing Marketing employers
+- Marketing Junior statistics dashboard
+- Salary trends visualization
+- Top hiring companies for Marketing Juniors
+- Location distribution chart
 
-### PR #9: Background Scheduler (~150 lines)
-- Set up APScheduler
-- Create daily scraping tasks
-- Add job deduplication logic
-- Implement old job cleanup
-- Add scraping status monitoring
+### PR #7: Automated Scraping & Scheduling (~150 lines)
+- Set up APScheduler for daily scraping
+- Configure scraping for Marketing Junior keywords:
+  - "Marketing Junior"
+  - "Marketing Fresh Graduate"
+  - "Marketing Entry Level"
+  - "Digital Marketing Junior"
+- Implement job deduplication
+- Add company data enrichment
 
-### PR #10: Docker & Deployment (~100 lines)
-- Create Dockerfile for backend
-- Create Dockerfile for frontend
-- Docker Compose configuration
+### PR #8: Testing & Deployment (~150 lines)
+- Add unit tests for scrapers
+- Create integration tests for API endpoints
+- Write frontend component tests
+- Docker configuration for production
 - Environment variables setup
-- Add README with setup instructions
+- Deployment documentation
 
-## Data Model
+## Simplified Data Models
 
 ```python
+# models/company.py
+class Company:
+    id: int
+    name: str
+    website: str  # optional
+    industry: str  # focus on Marketing/Advertising
+    created_at: datetime
+    updated_at: datetime
+
+# models/job.py
 class Job:
     id: int
+    external_id: str  # unique ID from source
     title: str
-    company: str
-    location: str
+    company_id: int  # FK to Company
     description: str
+    location: str
     url: str
     source: str  # 'indeed' or 'linkedin'
+    job_type: str  # full-time/part-time/contract/internship
+    experience_level: str  # entry/junior/mid/senior
+    salary_min: decimal  # optional
+    salary_max: decimal  # optional
+    salary_currency: str  # VND
     posted_date: datetime
-    scraped_date: datetime
-    salary: str  # optional
-    job_type: str  # full-time, part-time, etc.
     is_active: bool
+    created_at: datetime
+    updated_at: datetime
 ```
 
-## API Endpoints
+## API Endpoints (Aligned with API Contract)
 
 ```
-GET  /api/jobs?page=1&limit=20&search=marketing
+# Jobs
+GET  /api/jobs?experience_level=junior&search=marketing&page=1&limit=20
 GET  /api/jobs/{id}
-POST /api/scrape/trigger
-GET  /api/stats
-GET  /api/companies
-GET  /api/locations
+GET  /api/search/marketing-junior?location=ho-chi-minh&salary_min=8000000
+
+# Companies  
+GET  /api/companies?industry=marketing&page=1&limit=20
+
+# Statistics
+GET  /api/stats/marketing-junior
+
+# Filters
+GET  /api/filters/marketing-junior
 ```
 
 ## Frontend Routes
 
 ```
-/           - Job listing page
-/job/:id    - Job detail page
-/stats      - Scraping statistics
-/about      - About page
+/                      - Marketing Junior job listings
+/jobs/:id             - Job detail page
+/companies            - Companies hiring for Marketing
+/stats                - Marketing Junior statistics dashboard
 ```
 
-## Key Features (Keeping it Simple)
+## Key Features (Marketing Junior Focus)
 
-1. **Automated Daily Scraping**: Runs at 6 AM daily
-2. **Search & Filter**: Basic text search and filters
-3. **Duplicate Detection**: Based on URL and title
-4. **Data Retention**: Keep jobs for 30 days
-5. **Rate Limiting**: Respectful scraping with delays
+1. **Targeted Scraping**: Focus on Marketing Junior/Entry positions
+2. **Smart Filtering**: Pre-configured for junior-level Marketing roles
+3. **Salary Insights**: Track salary ranges for Marketing Juniors
+4. **Company Tracking**: Monitor companies actively hiring Marketing Juniors
+5. **Daily Updates**: Automated scraping for fresh Marketing opportunities
 
-## Important Considerations
+## Scraping Strategy
 
-1. **Robots.txt Compliance**: Check and respect robots.txt
-2. **Rate Limiting**: Add delays between requests (2-5 seconds)
-3. **User-Agent**: Use legitimate browser user-agent
-4. **Error Handling**: Graceful failures, don't crash on errors
-5. **Data Privacy**: Don't store personal information
+### Keywords to Search
+- Primary: "Marketing Junior", "Marketing Fresh Graduate"
+- Secondary: "Digital Marketing Entry", "Marketing Intern"
+- Location: "Vietnam", "Ho Chi Minh", "Hanoi"
 
-## Development Workflow
+### Data Extraction Priority
+1. Jobs with "Junior" or "Entry" in title
+2. Jobs with 0-2 years experience requirement
+3. Marketing-related industries
+4. Salary information when available
 
-1. Each PR should be tested independently
-2. Include basic unit tests where applicable
-3. Use environment variables for configuration
-4. Add logging for debugging
-5. Document API endpoints with FastAPI's auto-docs
+## Development Priorities
 
-## Future Enhancements (After MVP)
+1. **MVP Focus**: Get Marketing Junior jobs displayed quickly
+2. **Data Quality**: Ensure accurate experience level classification
+3. **Performance**: Optimize queries for Marketing-specific filters
+4. **User Experience**: Make it easy to find relevant Marketing Junior positions
 
-- Email notifications for new jobs
-- User accounts and saved searches
-- More job sources (VietnamWorks, TopCV)
-- Advanced filtering (experience level, skills)
-- Export to CSV/Excel
-- Job application tracking
+## Success Metrics
+
+- Number of Marketing Junior jobs scraped daily
+- Accuracy of junior-level classification
+- Companies actively hiring Marketing Juniors
+- Average salary range for Marketing Junior positions
+- Response time for filtered queries
+
+## Future Enhancements (Post-MVP)
+
+- Email alerts for new Marketing Junior positions
+- Resume matching for Marketing skills
+- Interview tips for Marketing Junior roles
+- Salary negotiation guidance
+- Career path visualization for Marketing professionals
