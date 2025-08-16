@@ -37,5 +37,5 @@ class TestHealthEndpoints:
         assert "Welcome to Job Scraper API" in data["message"]
         assert data["version"] == "0.1.0"
         assert data["docs"] == "/docs"
-        assert data["health"] == "/api/health"
-        assert data["database_stats"] == "/api/database/stats"
+        assert data["endpoints"]["health"] == "/api/health"
+        assert data["endpoints"]["database_stats"] == "/api/database/stats"
